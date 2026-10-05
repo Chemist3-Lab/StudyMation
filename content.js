@@ -370,3 +370,15 @@ window.addEventListener("keydown", (e) => {
             break;
     }
 }, true)
+
+// Ad Detection
+function isAdPlaying(adCheck) {
+    adCheck = document.getElementById("movie_player");
+    adCheck.classList.contains("ad-showing");
+    
+    if(adCheck) {
+        container.style.opacity = "0";
+    } else {
+        container.style.opacity = "100%";
+    }
+}
