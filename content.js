@@ -372,13 +372,25 @@ window.addEventListener("keydown", (e) => {
 }, true)
 
 // Ad Detection
-function isAdPlaying(adCheck) {
+function isAdPlaying(adCheck, hidePlayer) {
     adCheck = document.getElementById("movie_player");
-    adCheck.classList.contains("ad-showing");
-    
-    if(adCheck) {
+
+    if (!adCheck) return;
+
+    hidePlayer = adCheck.classList.contains("ad-showing") || adCheck.classList.contains("ad-interrupting")
+
+    if(hidePlayer) {
         container.style.opacity = "0";
+        container.style.pointerEvents = "none";
     } else {
-        container.style.opacity = "100%";
+        container.style.opacity = "1";
+        container.style.pointerEvents = "auto";
     }
+
+    return hidePlayer;
 }
+
+video.addEventListener("timeupdate", () => {
+    if (!video) return;
+    if(isAdPlaying()) return;
+});
