@@ -99,7 +99,7 @@ speedControl.append(speedQuarter, speedHalf, speedNormal)
 
 // Timeline Scrubber Update
 video.addEventListener("timeupdate", () => {
-    if (!video) return;
+    if (!video || isAdPlaying()) return;
     timeline.value = video.currentTime;
     if (loopStartTime && loopEndTime) {
         timeline.min = loopStartTime;
@@ -112,13 +112,13 @@ video.addEventListener("timeupdate", () => {
 
 // Timeline Scrubber Drag
 timeline.addEventListener("input", () => {
-    if (!video) return;
+    if (!video || isAdPlaying()) return;
     video.currentTime = Number(timeline.value);
 });
 
 // Play
 play.addEventListener("click", () => {
-    if (!video) return;
+    if (!video || isAdPlaying()) return;
     if (video.paused) {
         video.play();
         play.textContent = "❚❚"
@@ -139,7 +139,7 @@ function flashButton (btn) {
 
 // FrameSkip
 function stepFrames (frames, fps = 24) {
-    if (!video) return;
+    if (!video || isAdPlaying()) return;
     video.pause();
     video.currentTime += frames / fps;
 };
@@ -167,7 +167,7 @@ plus5f.addEventListener("click", () => {
 // PlayBackSpeed
 speedNormal.className = "speed-btn-active";    // Initial Loading
 function setSpeed (rate, targetSpeed) {
-    if (!video) return;
+    if (!video || isAdPlaying()) return;
     video.playbackRate = rate;
     speedQuarter.className = "";
     speedHalf.className = "";
@@ -182,7 +182,7 @@ speedNormal.addEventListener("click", () => setSpeed(1.0, speedNormal));
 
 // Mirror
 mirror.addEventListener("click", () => {
-    if (!video) return;
+    if (!video || isAdPlaying()) return;
     if(video.style.transform === "scaleX(-1)") {
         video.style.transform = "none";
         mirror.className = "mirror-btn";
@@ -217,7 +217,7 @@ grid.addEventListener("click", () => {
 
 // Frame Update 
 video.addEventListener("timeupdate", () => {
-    if (!video) return;
+    if (!video || isAdPlaying()) return;
     if (loopStartTime && loopEndTime) {
         currentFrame.textContent = Math.floor((video.currentTime - loopStartTime) * 24);
     } else {
@@ -226,7 +226,7 @@ video.addEventListener("timeupdate", () => {
 });
 
 video.addEventListener("timeupdate", () => {
-    if (!video) return;
+    if (!video || isAdPlaying()) return;
     if (loopEndTime) {
         endFrame.textContent = " / " + Math.floor((loopEndTime - loopStartTime) * 24);
     } else {
@@ -247,7 +247,7 @@ function formatTime (totalSeconds) {
 }
 
 loopStart.addEventListener("click", () => {
-    if (!video) return;
+    if (!video || isAdPlaying()) return;
     loopStartTime = video.currentTime;
     loopStart.textContent = "Start: " + formatTime(loopStartTime);
     loopStart.className = "loop-btn-active";
@@ -259,7 +259,7 @@ loopStart.addEventListener("click", () => {
 
 loopEnd.disabled = true; // Initial Loading
 loopEnd.addEventListener("click", () => {
-    if (!video) return;
+    if (!video || isAdPlaying()) return;
     loopEndTime = video.currentTime;
     loopEnd.textContent = "End: " + formatTime(loopEndTime);
     loopEnd.className = "loop-btn-active";
@@ -267,7 +267,7 @@ loopEnd.addEventListener("click", () => {
 
 // Loop Function
 video.addEventListener("timeupdate", () => {
-    if (!video) return;
+    if (!video || isAdPlaying()) return;
     if (loopStartTime !== null && loopEndTime !== null) {
         if (video.currentTime >= loopEndTime) {
             video.currentTime = loopStartTime;
@@ -278,7 +278,7 @@ video.addEventListener("timeupdate", () => {
 // Loop Clear
 loopClear.disabled = true; // Initial Loading
 loopClear.addEventListener("click", () => {
-    if (!video) return;
+    if (!video || isAdPlaying()) return;
     if ((loopStartTime && loopEndTime) || (loopStartTime || loopEndTime)) {
         loopStartTime = null;
         loopEndTime = null;
@@ -301,6 +301,9 @@ loopClear.addEventListener("click", () => {
 // - = = toggle speed up/down
 
 window.addEventListener("keydown", (e) => {
+    // Disable shorcuts if ad is playing
+    if (isAdPlaying()) return;
+
     // If the user is typing on a textfield (e.g. comment section, search bar), DO NOTHING!
     const tag = document.activeElement.tagName.toLowerCase();
     if (tag === "input" || tag === "textarea" || document.activeElement.isContentEditable) {
@@ -372,25 +375,39 @@ window.addEventListener("keydown", (e) => {
 }, true)
 
 // Ad Detection
-function isAdPlaying(adCheck, hidePlayer) {
-    adCheck = document.getElementById("movie_player");
+const moviePlayer = document.getElementById("movie_player");
 
-    if (!adCheck) return;
+if (moviePlayer) {
+    const adObserver = new MutationObserver(updateAdVisibility);
 
-    hidePlayer = adCheck.classList.contains("ad-showing") || adCheck.classList.contains("ad-interrupting")
+    adObserver.observe(moviePlayer, {
+        attributes: true,
+        attributeFilter: ["class"]
+    });
 
-    if(hidePlayer) {
-        container.style.opacity = "0";
-        container.style.pointerEvents = "none";
-    } else {
-        container.style.opacity = "1";
-        container.style.pointerEvents = "auto";
-    }
-
-    return hidePlayer;
+    // Initial check on load
+    updateAdVisibility();
 }
 
-video.addEventListener("timeupdate", () => {
-    if (!video) return;
-    if(isAdPlaying()) return;
-});
+function isAdPlaying(adCheck) {
+    adCheck = document.getElementById("movie_player");
+
+    if (!adCheck) return false;
+
+    return adCheck.classList.contains("ad-showing") ||
+           adCheck.classList.contains("ad-interrupting");
+        
+}
+
+function updateAdVisibility() {
+    const adActive = isAdPlaying();
+
+    // Toggle HUD Visibility
+    container.style.opacity = adActive ? "0" : "1";
+    container.style.pointerEvents = adActive ? "none" : "auto";
+
+    // Toggle Grid overlay (If active)
+    if (gridOverlay) {
+        gridOverlay.style.visibility = adActive ? "hidden" : "visible";
+    }
+}
