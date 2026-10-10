@@ -427,8 +427,12 @@ collapsibleBtn.addEventListener("click", () => {
     if (isCollapsed === false) {
         collapsibleBtn.textContent = "▼";
         isCollapsed = true;
+        container.classList.add("mini");
+        collapsibleBtn.className = "collapsible-btn-active";
     } else {
         collapsibleBtn.textContent = "▲";
         isCollapsed = false;
+        container.classList.remove("mini");
+        collapsibleBtn.className = "collapsible-btn";
     }
 });

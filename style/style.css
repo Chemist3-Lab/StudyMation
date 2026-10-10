@@ -224,3 +224,37 @@
 .animator-grid-overlay div {
     border: 1px solid white;
 }
+
+/* Toggle (Collapse) Activation */
+.collapsible-btn {
+    color: white;
+    background: #616161;
+    border: 0;
+    border-radius: 10px;
+    height: 35px;
+    width: 35px;
+    transition: background ease-in-out 0.3s;
+}
+
+.collapsible-btn-active {
+    color: white;
+    background: #e9a42d;
+    border: 0;
+    border-radius: 10px;
+    height: 35px;
+    width: 35px;
+    transition: background ease-in-out 0.3s;
+    transition: 0.3s ease;
+}
+
+.playback-hud.mini .timeline,
+.playback-hud.mini .control1,
+.playback-hud.mini .control2 {
+    display: none;
+}
+
+.playback-hud.mini {
+    height: auto;
+    grid-template-rows: auto;
+    transition: all 0.3s ease-in-out;
+}
