@@ -39,6 +39,11 @@
     text-overflow: ellipsis;
 }
 
+.header-container {
+    display: flex;
+    justify-content: space-between;
+}
+
 .timeline {
     accent-color:#e9a42d;
 }

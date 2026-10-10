@@ -9,10 +9,16 @@ const video = getVideo();
 let container = document.createElement("div");
 container.className = "playback-hud";
 
+let headerContainer = document.createElement('div');
+headerContainer.className = "header-container";
+
 let header = document.createElement('div');
 header.className = "header";
 header.textContent = "StudyMation!" + " | Now Studying: " + document.title.replace(" - YouTube", "");
 
+let collapsibleBtn = document.createElement('button');
+collapsibleBtn.className = "collapsible-btn";
+collapsibleBtn.textContent = "▲";
 
 let timeline = document.createElement("input");
 timeline.className = "timeline";
@@ -81,7 +87,9 @@ speedNormal.textContent = "1.0x";
 
 document.getElementById("movie_player")?.append(container);
 
-container.append(header, timeline, control1, control2);
+headerContainer.append(header, collapsibleBtn);
+
+container.append(headerContainer, timeline, control1, control2);
 control1.append(play, frameSkip, frameCount, loop);
 control2.append(mirror, grid, speedControl);
 
@@ -411,3 +419,16 @@ function updateAdVisibility() {
         gridOverlay.style.visibility = adActive ? "hidden" : "visible";
     }
 }
+
+// Collapsible function
+let isCollapsed = false;
+collapsibleBtn.addEventListener("click", () => {
+    if (!video || isAdPlaying()) return;
+    if (isCollapsed === false) {
+        collapsibleBtn.textContent = "▼";
+        isCollapsed = true;
+    } else {
+        collapsibleBtn.textContent = "▲";
+        isCollapsed = false;
+    }
+});
