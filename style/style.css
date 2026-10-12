@@ -5,6 +5,18 @@
     font-style: normal;
 }
 
+:root {
+    --accent-active: #BB2649;
+    --hud-background: rgba(22, 16, 18, 0.88);
+    --accent-hover: #D83159;
+    --surface-container: #2A1E23;
+    --button-inactive: #473038;
+    --button-hover: #5A3E47;
+    --hud-border: rgba(255, 255, 255, 0.15);
+    --text-main: #FFFFFF;
+    --text-muted: #A8989C;
+}
+
 .playback-hud {
     font-family: 'Ubuntu';
     position: absolute;
