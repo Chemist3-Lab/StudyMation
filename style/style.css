@@ -7,33 +7,34 @@
 
 :root {
     --accent-active: #BB2649;
-    --hud-background: rgba(22, 16, 18, 0.88);
     --accent-hover: #D83159;
+    --hud-background: rgba(22, 16, 18, 0.88);
+    --hud-border: rgba(255, 255, 255, 0.15);
     --surface-container: #2A1E23;
     --button-inactive: #473038;
     --button-hover: #5A3E47;
-    --hud-border: rgba(255, 255, 255, 0.15);
     --text-main: #FFFFFF;
     --text-muted: #A8989C;
 }
 
 .playback-hud {
-    font-family: 'Ubuntu';
+    font-family: 'Ubuntu', system-ui, -apple-system, sans-serif;
     position: absolute;
     top: 20px;
     left: 20px;
-    width: 45%;
+    min-width: 45%;
     height: auto;
-    background: rgba(18,18,18,0.85);
-    border: 2px solid white;
+    background: var(--hud-background);
+    border: 2px solid var(--hud-border);
     border-radius: 5px;
     z-index: 999;
     padding: 5px;
-    color: white;
+    color: var(--text-main);
     display: grid;
     grid-template-rows: 30px 1fr 1fr 1fr;
     gap: 1px;  
     backdrop-filter: blur(8px);
+    box-sizing: border-box;
 }
 
 .playback-hud button {
@@ -57,7 +58,7 @@
 }
 
 .timeline {
-    accent-color:#e9a42d;
+    accent-color:var(--accent-active);
 }
 
 .control1 {
@@ -68,8 +69,8 @@
 }
 
 .play-btn {
-    color: white;
-    background: #e9a42d;
+    color: var(--text-main);
+    background: var(--accent-active);
     border: 0;
     border-radius: 100px;
     height: 40px;
@@ -80,6 +81,10 @@
     font-size: 14px;
 }
 
+.play-btn:hover {
+    background: var(--accent-hover);
+}
+
 .control2 {
     display: flex;
     justify-content: space-around;
@@ -87,7 +92,7 @@
 }
 
 .frame-skip {
-    background: #202020;
+    background: var(--surface-container);
     border: 0;
     border-radius: 10px;
     padding: 5px;
@@ -95,8 +100,8 @@
 }
 
 .frame-skip button {
-    color: white;
-    background: #616161;
+    color: var(--text-main);
+    background: var(--button-inactive);
     border: 0;
     border-radius: 10px;
     padding: 5px;
@@ -110,7 +115,7 @@
 }
 
 .frame-count {
-    background: #202020;
+    background: var(--surface-container);
     border: 0;
     border-radius: 10px;
     padding: 5px;
@@ -123,26 +128,26 @@
 }
 
 .current-frame {
-    color: #e9a42d;
+    color: var(--accent-active);
 }
 
 .frame-count, .end-frame {
-    color: #616161;
+    color: var(--text-muted);
 }
 
 .loop {
-    background: #202020;
+    background: var(--surface-container);
     border: 0;
     border-radius: 10px;
     padding: 5px;    
     height: 25px;
     align-content: center;
-    color: #616161;
+    color: var(--text-muted);
 }
 
 .loop button {
-    color: white;
-    background: #616161;
+    color: var(--text-main);
+    background: var(--button-inactive);
     border: 0;
     border-radius: 10px;
     padding: 5px;
@@ -159,16 +164,20 @@
 }
 
 .mirror-btn, .grid-btn {
-    color: white;
-    background: #616161;
+    color: var(--text-main);
+    background: var(--button-inactive);
     border: 0;
     border-radius: 10px;
     height: 25px;
     transition: 0.3s ease;
 }
 
+.mirror-btn-active:hover, .grid-btn-active:hover {
+    background: var(--accent-hover);
+}
+
 .speed-control {
-    background: #202020;
+    background: var(--surface-container);
     border: 0;
     border-radius: 10px;
     padding: 5px;
@@ -178,8 +187,8 @@
 }
 
 .speed-control button {
-    color: white;
-    background: #616161;
+    color: var(--text-main);
+    background: var(--button-inactive);
     border: 0;
     border-radius: 10px;
     height: 25px;
@@ -190,16 +199,16 @@
 
 /* Button Interaction */
 .frame-skip button:hover, .loop button:not(.loop-btn-active):hover, .mirror-btn:hover, .grid-btn:hover, .speed-control button:not(.speed-btn-active):hover {
-    background: #757575;
+    background: var(--button-hover);
 }
 
 .frame-skip button.flash {
-    background: #e9a42d;
+    background: var(--accent-active);
 }
 
 .loop .loop-btn-active {
-    color: white;
-    background: #e9a42d;
+    color: var(--text-main);
+    background: var(--accent-active);
     border: 0;
     border-radius: 10px;
     padding: 5px;
@@ -207,16 +216,16 @@
 }
 
 .mirror-btn-active, .grid-btn-active {
-    color: white;
+    color: var(--text-main);
     border: 0;
     border-radius: 10px;
     height: 25px;
-    background-color: #e9a42d;
+    background-color: var(--accent-active);
     transition: 0.3s ease;
 }
 
 .speed-control button.speed-btn-active {
-    background-color: #e9a42d;
+    background-color: var(--accent-active);
 }
 
 /* Grid Overlay */
@@ -239,8 +248,8 @@
 
 /* Toggle (Collapse) Activation */
 .collapsible-btn {
-    color: white;
-    background: #616161;
+    color: var(--text-main);
+    background: var(--button-inactive);
     border: 0;
     border-radius: 10px;
     height: 35px;
@@ -249,14 +258,17 @@
 }
 
 .collapsible-btn-active {
-    color: white;
-    background: #e9a42d;
+    color: var(--text-main);
+    background: var(--accent-active);
     border: 0;
     border-radius: 10px;
     height: 35px;
     width: 35px;
     transition: background ease-in-out 0.3s;
-    transition: 0.3s ease;
+}
+
+.collapsible-btn-active:hover {
+    background: var(--accent-hover);
 }
 
 .playback-hud.mini .timeline,
