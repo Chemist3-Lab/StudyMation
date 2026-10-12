@@ -14,7 +14,19 @@ headerContainer.className = "header-container";
 
 let header = document.createElement('div');
 header.className = "header";
-header.textContent = "StudyMation!" + " | Now Studying: " + document.title.replace(" - YouTube", "");
+
+// Update title on every video load
+function updateTitle() {
+    header.textContent = "StudyMation!" + " | Now Studying: " + document.title.replace(/^\(\d+\)\s*/, "").replace(" - YouTube", "");
+}
+
+updateTitle();
+
+// Watch for when YouTube actually changes the <title> tag
+const titleElement = document.querySelector('title');
+if (titleElement) {
+    new MutationObserver(() => updateTitle()).observe(titleElement, { childList: true });
+}
 
 let collapsibleBtn = document.createElement('button');
 collapsibleBtn.className = "collapsible-btn";
