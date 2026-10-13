@@ -1,5 +1,3 @@
-
-https://github.com/user-attachments/assets/cf3c46f6-9bea-45ca-8dc0-53a3ae2e310a
 <!-- Title + One line description -->
 # StudyMation   
 ### Frame-by-frame study suited for 2D/3D Animators, storyboarders, and choreographers
@@ -100,4 +98,4 @@ Navigate to any video on YouTube—the StudyMation HUD will automatically appear
 
 <!-- Demonstration video or gif -->
 ## Demonstration
-Uploading Demo.mp4…
+https://github.com/user-attachments/assets/cf3c46f6-9bea-45ca-8dc0-53a3ae2e310a
