@@ -282,3 +282,12 @@
     grid-template-rows: auto;
     transition: all 0.3s ease-in-out;
 }
+
+.shortcut-card {
+    display: none;
+}
+
+.shortcut-hint:hover .shortcut-card {
+    display: block;
+    position: absolute;
+}

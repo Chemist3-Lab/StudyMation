@@ -97,9 +97,28 @@ speedHalf.textContent = "0.5x";
 let speedNormal = document.createElement("button");
 speedNormal.textContent = "1.0x";
 
+// Shortcut Hint
+let shortcutHint = document.createElement("div");
+shortcutHint.className = "shortcut-hint";
+shortcutHint.textContent = "?";
+let shortcutCard = document.createElement("div");
+shortcutCard.className = "shortcut-card";
+shortcutCard.innerHTML =
+  "StudyMation Shortcuts:\n" +
+  "• Space: Play / Pause\n" +
+  "• , / . : Step -1f / +1f\n" +
+  "• < / > : Skip -5f / +5f\n" +
+  "• [ / ] : Loop In / Out\n" +
+  "• Esc : Clear Loop\n" +
+  "• M : Mirror Video\n" +
+  "• G : Toggle Grid\n" +
+  "• - / = : Speed - / +";
+
+shortcutHint.append(shortcutCard);
+
 document.getElementById("movie_player")?.append(container);
 
-headerContainer.append(header, collapsibleBtn);
+headerContainer.append(header, shortcutHint, collapsibleBtn);
 
 container.append(headerContainer, timeline, control1, control2);
 control1.append(play, frameSkip, frameCount, loop);
