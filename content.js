@@ -104,14 +104,14 @@ shortcutHint.textContent = "?";
 let shortcutCard = document.createElement("div");
 shortcutCard.className = "shortcut-card";
 shortcutCard.innerHTML =
-  "StudyMation Shortcuts:\n" +
-  "• Space: Play / Pause\n" +
-  "• , / . : Step -1f / +1f\n" +
-  "• < / > : Skip -5f / +5f\n" +
-  "• [ / ] : Loop In / Out\n" +
-  "• Esc : Clear Loop\n" +
-  "• M : Mirror Video\n" +
-  "• G : Toggle Grid\n" +
+  "StudyMation Shortcuts:<br>" +
+  "• Space: Play / Pause<br>" +
+  "• , / . : Step -1f / +1f<br>" +
+  "• < / > : Skip -5f / +5f<br>" +
+  "• [ / ] : Loop In / Out<br>" +
+  "• Esc : Clear Loop<br>" +
+  "• M : Mirror Video<br>" +
+  "• G : Toggle Grid<br>" +
   "• - / = : Speed - / +";
 
 shortcutHint.append(shortcutCard);
