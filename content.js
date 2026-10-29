@@ -143,7 +143,7 @@ function attachVideoListeners() {
     video.addEventListener("timeupdate", () => {
         if (!video || isAdPlaying()) return;
         timeline.value = video.currentTime;
-        if (loopStartTime && loopEndTime) {
+        if (loopStartTime !== null && loopEndTime !== null) {
             timeline.min = loopStartTime;
             timeline.max = loopEndTime;
         } else {
@@ -158,7 +158,7 @@ function attachVideoListeners() {
     // Frame Update 
     video.addEventListener("timeupdate", () => {
         if (!video || isAdPlaying()) return;
-        if (loopStartTime && loopEndTime) {
+        if (loopStartTime !== null && loopEndTime !== null) {
             currentFrame.textContent = Math.floor((video.currentTime - loopStartTime) * 24);
         } else {
             currentFrame.textContent = Math.floor(video.currentTime * 24);
@@ -167,7 +167,7 @@ function attachVideoListeners() {
 
     video.addEventListener("timeupdate", () => {
         if (!video || isAdPlaying()) return;
-        if (loopEndTime) {
+        if (loopStartTime !== null && loopEndTime !== null) {
             endFrame.textContent = " / " + Math.floor((loopEndTime - loopStartTime) * 24);
         } else {
             endFrame.textContent = " / " + Math.floor(video.duration * 24);
@@ -307,14 +307,19 @@ loopStart.addEventListener("click", () => {
     loopStart.textContent = "Start: " + formatTime(loopStartTime);
     loopStart.className = "loop-btn-active";
     loopClear.disabled = false;
-    if (loopStartTime) {
-        loopEnd.disabled = false;
+    loopEnd.disabled = false;
+
+    if (loopStartTime !== null && loopStartTime >= loopEndTime) {
+        loopEndTime = null;
+        loopEnd.className = ""
     }
 });
 
 loopEnd.disabled = true; // Initial Loading
 loopEnd.addEventListener("click", () => {
     if (!video || isAdPlaying()) return;
+    if (loopStartTime === null || video.currentTime <= loopStartTime) return;
+
     loopEndTime = video.currentTime;
     loopEnd.textContent = "End: " + formatTime(loopEndTime);
     loopEnd.className = "loop-btn-active";
@@ -323,18 +328,22 @@ loopEnd.addEventListener("click", () => {
 
 
 // Loop Clear
+function clearLoop() {
+    loopStartTime = null;
+    loopEndTime = null;
+    loopStart.textContent = "Start: --";
+    loopEnd.textContent = "End: --";
+    loopStart.className = "";
+    loopEnd.className = "";
+    loopEnd.disabled = true;
+    loopClear.disabled = true;
+}
+
 loopClear.disabled = true; // Initial Loading
 loopClear.addEventListener("click", () => {
     if (!video || isAdPlaying()) return;
-    if ((loopStartTime && loopEndTime) || (loopStartTime || loopEndTime)) {
-        loopStartTime = null;
-        loopEndTime = null;
-        loopStart.textContent = "Start: --";
-        loopEnd.textContent = "End: --";
-        loopStart.className = "";
-        loopEnd.className = "";
-        loopEnd.disabled = true;
-        loopClear.disabled = true;
+    if (loopStartTime !== null || loopEndTime !== null) {
+        clearLoop();
     }
 });
 
@@ -448,6 +457,9 @@ function initPlayer() {
         attributes: true,
         attributeFilter: ["class"]
     });
+
+    // Clear registered loop on new video page access
+    clearLoop();
 
     // Initial check on load
     updateAdVisibility();
