@@ -4,7 +4,8 @@ function getVideo() {
     return fetchVideo;
 }
 
-const video = getVideo();
+let video = null;
+let boundVideo = null;
 
 let container = document.createElement("div");
 container.className = "playback-hud";
@@ -116,8 +117,6 @@ shortcutCard.innerHTML =
 
 shortcutHint.append(shortcutCard);
 
-document.getElementById("movie_player")?.append(container);
-
 headerContainer.append(header, shortcutHint, collapsibleBtn);
 
 container.append(headerContainer, timeline, control1, control2);
@@ -136,18 +135,56 @@ speedControl.append(speedQuarter, speedHalf, speedNormal)
 
 // Wiring / Functions
 
-// Timeline Scrubber Update
-video.addEventListener("timeupdate", () => {
-    if (!video || isAdPlaying()) return;
-    timeline.value = video.currentTime;
-    if (loopStartTime && loopEndTime) {
-        timeline.min = loopStartTime;
-        timeline.max = loopEndTime;
-    } else {
-        timeline.min = 0;
-        timeline.max = video.duration || 100;
+function attachVideoListeners() {
+    if(!video || video === boundVideo) return;
+    boundVideo = video;
+
+    // Timeline Scrubber Update
+    video.addEventListener("timeupdate", () => {
+        if (!video || isAdPlaying()) return;
+        timeline.value = video.currentTime;
+        if (loopStartTime && loopEndTime) {
+            timeline.min = loopStartTime;
+            timeline.max = loopEndTime;
+        } else {
+            timeline.min = 0;
+            timeline.max = video.duration || 100;
+        }
+    });
+
+    video.addEventListener("play", () => {play.textContent = "❚❚"})
+    video.addEventListener("pause", () => {play.textContent = "▶"})
+
+    // Frame Update 
+    video.addEventListener("timeupdate", () => {
+        if (!video || isAdPlaying()) return;
+        if (loopStartTime && loopEndTime) {
+            currentFrame.textContent = Math.floor((video.currentTime - loopStartTime) * 24);
+        } else {
+            currentFrame.textContent = Math.floor(video.currentTime * 24);
+        }
+    });
+
+    video.addEventListener("timeupdate", () => {
+        if (!video || isAdPlaying()) return;
+        if (loopEndTime) {
+            endFrame.textContent = " / " + Math.floor((loopEndTime - loopStartTime) * 24);
+        } else {
+            endFrame.textContent = " / " + Math.floor(video.duration * 24);
+        }
+    });
+    // Loop Function
+    video.addEventListener("timeupdate", () => {
+        if (!video || isAdPlaying()) return;
+        if (loopStartTime !== null && loopEndTime !== null) {
+            if (video.currentTime >= loopEndTime) {
+                video.currentTime = loopStartTime;
+            }
+        }
+    });
     }
-});
+
+
 
 // Timeline Scrubber Drag
 timeline.addEventListener("input", () => {
@@ -167,8 +204,6 @@ play.addEventListener("click", () => {
     }
 });
 
-video.addEventListener("play", () => {play.textContent = "❚❚"})
-video.addEventListener("pause", () => {play.textContent = "▶"})
 
 // Add flash to triggered buttons
 function flashButton (btn) {
@@ -241,8 +276,6 @@ for (let i = 0; i < 9; i++) {
     gridOverlay.append(document.createElement("div"));
 }
 
-document.getElementById("movie_player")?.append(gridOverlay);
-
 grid.addEventListener("click", () => {
     if (!video) return;
     if (gridOverlay.style.display === "none") {
@@ -254,24 +287,7 @@ grid.addEventListener("click", () => {
     }
 });
 
-// Frame Update 
-video.addEventListener("timeupdate", () => {
-    if (!video || isAdPlaying()) return;
-    if (loopStartTime && loopEndTime) {
-        currentFrame.textContent = Math.floor((video.currentTime - loopStartTime) * 24);
-    } else {
-        currentFrame.textContent = Math.floor(video.currentTime * 24);
-    }
-});
 
-video.addEventListener("timeupdate", () => {
-    if (!video || isAdPlaying()) return;
-    if (loopEndTime) {
-        endFrame.textContent = " / " + Math.floor((loopEndTime - loopStartTime) * 24);
-    } else {
-        endFrame.textContent = " / " + Math.floor(video.duration * 24);
-    }
-});
 
 // Loop Start-End
 let loopStartTime = null;
@@ -304,15 +320,7 @@ loopEnd.addEventListener("click", () => {
     loopEnd.className = "loop-btn-active";
 });
 
-// Loop Function
-video.addEventListener("timeupdate", () => {
-    if (!video || isAdPlaying()) return;
-    if (loopStartTime !== null && loopEndTime !== null) {
-        if (video.currentTime >= loopEndTime) {
-            video.currentTime = loopStartTime;
-        }
-    }
-});
+
 
 // Loop Clear
 loopClear.disabled = true; // Initial Loading
@@ -413,12 +421,29 @@ window.addEventListener("keydown", (e) => {
     }
 }, true)
 
-// Ad Detection
-const moviePlayer = document.getElementById("movie_player");
+const adObserver = new MutationObserver(updateAdVisibility);
 
-if (moviePlayer) {
-    const adObserver = new MutationObserver(updateAdVisibility);
+function initPlayer() {
+    video = getVideo();
+    // Ad Detection
+    const moviePlayer = document.getElementById("movie_player");
+    if (!moviePlayer || !video) return;
 
+    // Re-attach HUD and Grid if YouTube replaced #movie_player
+    if (!moviePlayer.contains(container)) {
+        moviePlayer.append(container)
+    }
+    if (!moviePlayer.contains(gridOverlay)) {
+        moviePlayer.append(gridOverlay)
+    }
+
+    // Attach Video listeners & sync play/pause button
+    attachVideoListeners();
+    play.textContent = video.paused ? "▶" : "❚❚";
+    updateTitle();
+
+    // Observe #movie_player for ads
+    adObserver.disconnect();
     adObserver.observe(moviePlayer, {
         attributes: true,
         attributeFilter: ["class"]
@@ -450,6 +475,9 @@ function updateAdVisibility() {
         gridOverlay.style.visibility = adActive ? "hidden" : "visible";
     }
 }
+
+initPlayer();
+window.addEventListener("yt-navigate-finish", initPlayer);
 
 // Collapsible function
 let isCollapsed = false;
