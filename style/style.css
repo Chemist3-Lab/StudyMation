@@ -5,6 +5,9 @@
     font-style: normal;
 }
 
+/* Legend */
+/* stm - StudyMation (Prefix) */
+
 .playback-hud {
     --accent-active: #BB2649;
     --accent-hover: #D83159;
@@ -43,7 +46,7 @@
     font-family: inherit;
 }
 
-.header {
+.stm-header {
     font-size: 12px;
     font-weight: bold;
     padding: 5px;
@@ -52,23 +55,23 @@
     text-overflow: ellipsis;
 }
 
-.header-container {
+.stm-header-container {
     display: flex;
     justify-content: space-between;
 }
 
-.timeline {
+.stm-timeline {
     accent-color:var(--accent-active);
 }
 
-.control1 {
+.stm-control1 {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
     gap: 5px;
 }
 
-.play-btn {
+.stm-play-btn {
     color: var(--text-main);
     background: var(--accent-active);
     border: 0;
@@ -81,17 +84,17 @@
     font-size: 14px;
 }
 
-.play-btn:hover {
+.stm-play-btn:hover {
     background: var(--accent-hover);
 }
 
-.control2 {
+.stm-control2 {
     display: flex;
     justify-content: space-around;
     align-items: center;
 }
 
-.frame-skip {
+.stm-frame-skip {
     background: var(--surface-container);
     border: 0;
     border-radius: 10px;
@@ -99,7 +102,7 @@
     height: 25px;
 }
 
-.frame-skip button {
+.stm-frame-skip button {
     color: var(--text-main);
     background: var(--button-inactive);
     border: 0;
@@ -110,11 +113,11 @@
     transition: background 0.3s ease-out; 
 }
 
-.frame-skip button:not(:last-child) {
+.stm-frame-skip button:not(:last-child) {
     margin-right: 3px;
 }
 
-.frame-count {
+.stm-frame-count {
     background: var(--surface-container);
     border: 0;
     border-radius: 10px;
@@ -123,19 +126,19 @@
     align-content: center;
 }
 
-.current-frame, .end-frame {
+.stm-current-frame, .stm-end-frame {
     font-size: 14px;
 }
 
-.current-frame {
+.stm-current-frame {
     color: var(--accent-active);
 }
 
-.frame-count, .end-frame {
+.stm-frame-count, .stm-end-frame {
     color: var(--text-muted);
 }
 
-.loop {
+.stm-loop {
     background: var(--surface-container);
     border: 0;
     border-radius: 10px;
@@ -145,7 +148,7 @@
     color: var(--text-muted);
 }
 
-.loop button {
+.stm-loop button {
     color: var(--text-main);
     background: var(--button-inactive);
     border: 0;
@@ -155,15 +158,15 @@
     transition: background ease-in-out 0.3s;
 }
 
-.loop button:not(:last-child) {
+.stm-loop button:not(:last-child) {
     margin-right: 5px;
 }
 
-.loop button:nth-child(2):disabled, .loop button:last-child:disabled {
+.stm-loop button:nth-child(2):disabled, .stm-loop button:last-child:disabled {
     opacity: 0.5;
 }
 
-.mirror-btn, .grid-btn {
+.stm-mirror-btn, .stm-grid-btn {
     color: var(--text-main);
     background: var(--button-inactive);
     border: 0;
@@ -172,11 +175,11 @@
     transition: 0.3s ease;
 }
 
-.mirror-btn-active:hover, .grid-btn-active:hover {
+.stm-mirror-btn-active:hover, .stm-grid-btn-active:hover {
     background: var(--accent-hover);
 }
 
-.speed-control {
+.stm-speed-control {
     background: var(--surface-container);
     border: 0;
     border-radius: 10px;
@@ -186,7 +189,7 @@
     gap: 5px;
 }
 
-.speed-control button {
+.stm-speed-control button {
     color: var(--text-main);
     background: var(--button-inactive);
     border: 0;
@@ -198,15 +201,15 @@
 
 
 /* Button Interaction */
-.frame-skip button:hover, .loop button:not(.loop-btn-active):hover, .mirror-btn:hover, .grid-btn:hover, .speed-control button:not(.speed-btn-active):hover {
+.stm-frame-skip button:hover, .stm-loop button:not(.stm-loop-btn-active):hover, .stm-mirror-btn:hover, .stm-grid-btn:hover, .stm-speed-control button:not(.stm-speed-btn-active):hover {
     background: var(--button-hover);
 }
 
-.frame-skip button.flash {
+.stm-frame-skip button.flash {
     background: var(--accent-active);
 }
 
-.loop .loop-btn-active {
+.stm-loop .stm-loop-btn-active {
     color: var(--text-main);
     background: var(--accent-active);
     border: 0;
@@ -215,7 +218,7 @@
     height: 25px;
 }
 
-.mirror-btn-active, .grid-btn-active {
+.stm-mirror-btn-active, .stm-grid-btn-active {
     color: var(--text-main);
     border: 0;
     border-radius: 10px;
@@ -224,7 +227,7 @@
     transition: 0.3s ease;
 }
 
-.speed-control button.speed-btn-active {
+.stm-speed-control button.stm-speed-btn-active {
     background-color: var(--accent-active);
 }
 
@@ -247,7 +250,7 @@
 }
 
 /* Toggle (Collapse) Activation */
-.collapsible-btn {
+.stm-collapsible-btn {
     color: var(--text-main);
     background: var(--button-inactive);
     border: 0;
@@ -257,7 +260,7 @@
     transition: background ease-in-out 0.3s;
 }
 
-.collapsible-btn-active {
+.stm-collapsible-btn-active {
     color: var(--text-main);
     background: var(--accent-active);
     border: 0;
@@ -267,13 +270,13 @@
     transition: background ease-in-out 0.3s;
 }
 
-.collapsible-btn-active:hover {
+.stm-collapsible-btn-active:hover {
     background: var(--accent-hover);
 }
 
-.playback-hud.mini .timeline,
-.playback-hud.mini .control1,
-.playback-hud.mini .control2 {
+.playback-hud.mini .stm-timeline,
+.playback-hud.mini .stm-control1,
+.playback-hud.mini .stm-control2 {
     display: none;
 }
 
@@ -283,11 +286,11 @@
     transition: all 0.3s ease-in-out;
 }
 
-.shortcut-card {
+.stm-shortcut-card {
     display: none;
 }
 
-.shortcut-hint {
+.stm-shortcut-hint {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -299,12 +302,12 @@
     font-size: 10px;
 }
 
-.shortcut-hint:hover {
+.stm-shortcut-hint:hover {
     background: var(--button-hover);
     color: var(--text-main);
 }
 
-.shortcut-hint:hover .shortcut-card {
+.stm-shortcut-hint:hover .stm-shortcut-card {
     display: block;
     position: absolute;
     color: var(--text-main);

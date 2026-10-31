@@ -11,10 +11,10 @@ let container = document.createElement("div");
 container.className = "playback-hud";
 
 let headerContainer = document.createElement('div');
-headerContainer.className = "header-container";
+headerContainer.className = "stm-header-container";
 
 let header = document.createElement('div');
-header.className = "header";
+header.className = "stm-header";
 
 // Update title on every video load
 function updateTitle() {
@@ -30,32 +30,32 @@ if (titleElement) {
 }
 
 let collapsibleBtn = document.createElement('button');
-collapsibleBtn.className = "collapsible-btn";
+collapsibleBtn.className = "stm-collapsible-btn";
 collapsibleBtn.textContent = "▲";
 
 let timeline = document.createElement("input");
-timeline.className = "timeline";
+timeline.className = "stm-timeline";
 timeline.type = "range";
 timeline.min = 0;
 timeline.value = 0;
 timeline.step = 0.01;
 
 let control1 = document.createElement("div");
-control1.className ="control1";
+control1.className ="stm-control1";
 let control2 = document.createElement("div");
-control2.className ="control2";
+control2.className ="stm-control2";
 
 let play = document.createElement("button");
 play.textContent = "❚❚"
-play.className = "play-btn";
+play.className = "stm-play-btn";
 let frameSkip = document.createElement("div");
-frameSkip.className = "frame-skip"; // To be utilized with parent property (buttons)
+frameSkip.className = "stm-frame-skip"; // To be utilized with parent property (buttons)
 let frameCount= document.createElement("div");
 frameCount.textContent = "FRAMES: ";
-frameCount.className = "frame-count";
+frameCount.className = "stm-frame-count";
 let loop = document.createElement("div");
 loop.textContent = "LOOP:   "; 
-loop.className = "loop";// To be utilized with parent property (buttons)
+loop.className = "stm-loop";// To be utilized with parent property (buttons)
 
 // frameSkip buttons
 let minus5f = document.createElement("button");
@@ -69,9 +69,9 @@ plus5f.textContent = "5f";
 
 // frameCount interface
 let currentFrame = document.createElement("span");
-currentFrame.className = "current-frame";
+currentFrame.className = "stm-current-frame";
 let endFrame = document.createElement("span");
-endFrame.className = "end-frame";
+endFrame.className = "stm-end-frame";
 
 // loop buttons
 let loopStart = document.createElement("button");
@@ -83,12 +83,12 @@ loopClear.textContent = "Clear";
 
 let mirror = document.createElement("button");
 mirror.textContent = "Mirror [M]";
-mirror.className = "mirror-btn";
+mirror.className = "stm-mirror-btn";
 let grid = document.createElement("button");
 grid.textContent = "Grid [G]";
-grid.className = "grid-btn";
+grid.className = "stm-grid-btn";
 let speedControl = document.createElement("div");
-speedControl.className = "speed-control"; // To be utilized with parent property (buttons)
+speedControl.className = "stm-speed-control"; // To be utilized with parent property (buttons)
 
 // speedControl buttons
 let speedQuarter = document.createElement("button");
@@ -100,10 +100,10 @@ speedNormal.textContent = "1.0x";
 
 // Shortcut Hint
 let shortcutHint = document.createElement("div");
-shortcutHint.className = "shortcut-hint";
+shortcutHint.className = "stm-shortcut-hint";
 shortcutHint.textContent = "?";
 let shortcutCard = document.createElement("div");
-shortcutCard.className = "shortcut-card";
+shortcutCard.className = "stm-shortcut-card";
 shortcutCard.innerHTML =
   "StudyMation Shortcuts:<br>" +
   "• Space: Play / Pause<br>" +
@@ -239,7 +239,7 @@ plus5f.addEventListener("click", () => {
 
 
 // PlayBackSpeed
-speedNormal.className = "speed-btn-active";    // Initial Loading
+speedNormal.className = "stm-speed-btn-active";    // Initial Loading
 function setSpeed (rate, targetSpeed) {
     if (!video || isAdPlaying()) return;
     video.playbackRate = rate;
@@ -247,7 +247,7 @@ function setSpeed (rate, targetSpeed) {
     speedHalf.className = "";
     speedNormal.className = "";
 
-    targetSpeed.className = "speed-btn-active";
+    targetSpeed.className = "stm-speed-btn-active";
 }
 
 speedQuarter.addEventListener("click", () => setSpeed(0.25, speedQuarter));
@@ -259,10 +259,10 @@ mirror.addEventListener("click", () => {
     if (!video || isAdPlaying()) return;
     if(video.style.transform === "scaleX(-1)") {
         video.style.transform = "none";
-        mirror.className = "mirror-btn";
+        mirror.className = "stm-mirror-btn";
     } else {
         video.style.transform = "scaleX(-1)";
-        mirror.className = "mirror-btn-active";
+        mirror.className = "stm-mirror-btn-active";
     }
 });
 
@@ -280,10 +280,10 @@ grid.addEventListener("click", () => {
     if (!video) return;
     if (gridOverlay.style.display === "none") {
         gridOverlay.style.display = "grid";
-        grid.className = "grid-btn-active";
+        grid.className = "stm-grid-btn-active";
     } else {
         gridOverlay.style.display = "none";
-        grid.className = "grid-btn";
+        grid.className = "stm-grid-btn";
     }
 });
 
@@ -305,7 +305,7 @@ loopStart.addEventListener("click", () => {
     if (!video || isAdPlaying()) return;
     loopStartTime = video.currentTime;
     loopStart.textContent = "Start: " + formatTime(loopStartTime);
-    loopStart.className = "loop-btn-active";
+    loopStart.className = "stm-loop-btn-active";
     loopClear.disabled = false;
     loopEnd.disabled = false;
 
@@ -322,7 +322,7 @@ loopEnd.addEventListener("click", () => {
 
     loopEndTime = video.currentTime;
     loopEnd.textContent = "End: " + formatTime(loopEndTime);
-    loopEnd.className = "loop-btn-active";
+    loopEnd.className = "stm-loop-btn-active";
 });
 
 
@@ -499,11 +499,11 @@ collapsibleBtn.addEventListener("click", () => {
         collapsibleBtn.textContent = "▼";
         isCollapsed = true;
         container.classList.add("mini");
-        collapsibleBtn.className = "collapsible-btn-active";
+        collapsibleBtn.className = "stm-collapsible-btn-active";
     } else {
         collapsibleBtn.textContent = "▲";
         isCollapsed = false;
         container.classList.remove("mini");
-        collapsibleBtn.className = "collapsible-btn";
+        collapsibleBtn.className = "stm-collapsible-btn";
     }
 });
