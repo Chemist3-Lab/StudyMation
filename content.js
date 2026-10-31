@@ -1,6 +1,5 @@
 function getVideo() {
     let fetchVideo = document.querySelector("video");
-    console.log("Video Fetched!", fetchVideo);
     return fetchVideo;
 }
 
@@ -182,7 +181,23 @@ function attachVideoListeners() {
             }
         }
     });
-    }
+    // Initial loading of playback speed
+    video.addEventListener("ratechange", () => {
+        if (!video || isAdPlaying()) return;
+        speedQuarter.className = "";
+        speedHalf.className = "";
+        speedNormal.className = "";
+
+        if (video.playbackRate === 0.25) {
+            speedQuarter.className = "stm-speed-btn-active";
+        } else if (video.playbackRate === 0.5) {
+            speedHalf.className = "stm-speed-btn-active";
+        } else if (video.playbackRate === 1.0) {
+            speedNormal.className = "stm-speed-btn-active";
+        }
+    });
+    
+}
 
 
 
@@ -239,7 +254,6 @@ plus5f.addEventListener("click", () => {
 
 
 // PlayBackSpeed
-speedNormal.className = "stm-speed-btn-active";    // Initial Loading
 function setSpeed (rate, targetSpeed) {
     if (!video || isAdPlaying()) return;
     video.playbackRate = rate;
@@ -360,6 +374,9 @@ window.addEventListener("keydown", (e) => {
     // Disable shorcuts if ad is playing
     if (isAdPlaying()) return;
 
+    // Shortcut Safeguard
+    if (e.ctrlKey || e.altKey || e.metaKey) return;
+
     // If the user is typing on a textfield (e.g. comment section, search bar), DO NOTHING!
     const tag = document.activeElement.tagName.toLowerCase();
     if (tag === "input" || tag === "textarea" || document.activeElement.isContentEditable) {
@@ -394,9 +411,11 @@ window.addEventListener("keydown", (e) => {
             loopEnd.click();
             break;
         case "Escape":
-            e.preventDefault();
-            e.stopImmediatePropagation();
-            loopClear.click();
+            if (loopStartTime !== null || loopEndTime !== null) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                loopClear.click();
+            }
             break;        
         case "m":
         case "M":
