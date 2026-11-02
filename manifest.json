@@ -1,7 +1,8 @@
 {
     "manifest_version": 3,
     "name": "StudyMation",
-    "version": "1.0.0",
+    "version": "0.21",
+    "version_name": "v0.21 beta",
     "description": "Frame-by-frame playback, flipping, and grid-analysis for animators.",
     "content_scripts": [
         {
