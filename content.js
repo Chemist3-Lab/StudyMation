@@ -1,19 +1,19 @@
 function getVideo() {
     let fetchVideo = document.querySelector("video");
-    console.log("Video Fetched!", fetchVideo);
     return fetchVideo;
 }
 
-const video = getVideo();
+let video = null;
+let boundVideo = null;
 
 let container = document.createElement("div");
 container.className = "playback-hud";
 
 let headerContainer = document.createElement('div');
-headerContainer.className = "header-container";
+headerContainer.className = "stm-header-container";
 
 let header = document.createElement('div');
-header.className = "header";
+header.className = "stm-header";
 
 // Update title on every video load
 function updateTitle() {
@@ -29,32 +29,32 @@ if (titleElement) {
 }
 
 let collapsibleBtn = document.createElement('button');
-collapsibleBtn.className = "collapsible-btn";
+collapsibleBtn.className = "stm-collapsible-btn";
 collapsibleBtn.textContent = "▲";
 
 let timeline = document.createElement("input");
-timeline.className = "timeline";
+timeline.className = "stm-timeline";
 timeline.type = "range";
 timeline.min = 0;
 timeline.value = 0;
 timeline.step = 0.01;
 
 let control1 = document.createElement("div");
-control1.className ="control1";
+control1.className ="stm-control1";
 let control2 = document.createElement("div");
-control2.className ="control2";
+control2.className ="stm-control2";
 
 let play = document.createElement("button");
 play.textContent = "❚❚"
-play.className = "play-btn";
+play.className = "stm-play-btn";
 let frameSkip = document.createElement("div");
-frameSkip.className = "frame-skip"; // To be utilized with parent property (buttons)
+frameSkip.className = "stm-frame-skip"; // To be utilized with parent property (buttons)
 let frameCount= document.createElement("div");
 frameCount.textContent = "FRAMES: ";
-frameCount.className = "frame-count";
+frameCount.className = "stm-frame-count";
 let loop = document.createElement("div");
 loop.textContent = "LOOP:   "; 
-loop.className = "loop";// To be utilized with parent property (buttons)
+loop.className = "stm-loop";// To be utilized with parent property (buttons)
 
 // frameSkip buttons
 let minus5f = document.createElement("button");
@@ -68,9 +68,9 @@ plus5f.textContent = "5f";
 
 // frameCount interface
 let currentFrame = document.createElement("span");
-currentFrame.className = "current-frame";
+currentFrame.className = "stm-current-frame";
 let endFrame = document.createElement("span");
-endFrame.className = "end-frame";
+endFrame.className = "stm-end-frame";
 
 // loop buttons
 let loopStart = document.createElement("button");
@@ -82,12 +82,12 @@ loopClear.textContent = "Clear";
 
 let mirror = document.createElement("button");
 mirror.textContent = "Mirror [M]";
-mirror.className = "mirror-btn";
+mirror.className = "stm-mirror-btn";
 let grid = document.createElement("button");
 grid.textContent = "Grid [G]";
-grid.className = "grid-btn";
+grid.className = "stm-grid-btn";
 let speedControl = document.createElement("div");
-speedControl.className = "speed-control"; // To be utilized with parent property (buttons)
+speedControl.className = "stm-speed-control"; // To be utilized with parent property (buttons)
 
 // speedControl buttons
 let speedQuarter = document.createElement("button");
@@ -99,10 +99,10 @@ speedNormal.textContent = "1.0x";
 
 // Shortcut Hint
 let shortcutHint = document.createElement("div");
-shortcutHint.className = "shortcut-hint";
+shortcutHint.className = "stm-shortcut-hint";
 shortcutHint.textContent = "?";
 let shortcutCard = document.createElement("div");
-shortcutCard.className = "shortcut-card";
+shortcutCard.className = "stm-shortcut-card";
 shortcutCard.innerHTML =
   "StudyMation Shortcuts:<br>" +
   "• Space: Play / Pause<br>" +
@@ -115,8 +115,6 @@ shortcutCard.innerHTML =
   "• - / = : Speed - / +";
 
 shortcutHint.append(shortcutCard);
-
-document.getElementById("movie_player")?.append(container);
 
 headerContainer.append(header, shortcutHint, collapsibleBtn);
 
@@ -136,18 +134,72 @@ speedControl.append(speedQuarter, speedHalf, speedNormal)
 
 // Wiring / Functions
 
-// Timeline Scrubber Update
-video.addEventListener("timeupdate", () => {
-    if (!video || isAdPlaying()) return;
-    timeline.value = video.currentTime;
-    if (loopStartTime && loopEndTime) {
-        timeline.min = loopStartTime;
-        timeline.max = loopEndTime;
-    } else {
-        timeline.min = 0;
-        timeline.max = video.duration || 100;
-    }
-});
+function attachVideoListeners() {
+    if(!video || video === boundVideo) return;
+    boundVideo = video;
+
+    // Timeline Scrubber Update
+    video.addEventListener("timeupdate", () => {
+        if (!video || isAdPlaying()) return;
+        timeline.value = video.currentTime;
+        if (loopStartTime !== null && loopEndTime !== null) {
+            timeline.min = loopStartTime;
+            timeline.max = loopEndTime;
+        } else {
+            timeline.min = 0;
+            timeline.max = video.duration || 100;
+        }
+    });
+
+    video.addEventListener("play", () => {play.textContent = "❚❚"})
+    video.addEventListener("pause", () => {play.textContent = "▶"})
+
+    // Frame Update 
+    video.addEventListener("timeupdate", () => {
+        if (!video || isAdPlaying()) return;
+        if (loopStartTime !== null && loopEndTime !== null) {
+            currentFrame.textContent = Math.floor((video.currentTime - loopStartTime) * 24);
+        } else {
+            currentFrame.textContent = Math.floor(video.currentTime * 24);
+        }
+    });
+
+    video.addEventListener("timeupdate", () => {
+        if (!video || isAdPlaying()) return;
+        if (loopStartTime !== null && loopEndTime !== null) {
+            endFrame.textContent = " / " + Math.floor((loopEndTime - loopStartTime) * 24);
+        } else {
+            endFrame.textContent = " / " + Math.floor(video.duration * 24);
+        }
+    });
+    // Loop Function
+    video.addEventListener("timeupdate", () => {
+        if (!video || isAdPlaying()) return;
+        if (loopStartTime !== null && loopEndTime !== null) {
+            if (video.currentTime >= loopEndTime) {
+                video.currentTime = loopStartTime;
+            }
+        }
+    });
+    // Initial loading of playback speed
+    video.addEventListener("ratechange", () => {
+        if (!video || isAdPlaying()) return;
+        speedQuarter.className = "";
+        speedHalf.className = "";
+        speedNormal.className = "";
+
+        if (video.playbackRate === 0.25) {
+            speedQuarter.className = "stm-speed-btn-active";
+        } else if (video.playbackRate === 0.5) {
+            speedHalf.className = "stm-speed-btn-active";
+        } else if (video.playbackRate === 1.0) {
+            speedNormal.className = "stm-speed-btn-active";
+        }
+    });
+    
+}
+
+
 
 // Timeline Scrubber Drag
 timeline.addEventListener("input", () => {
@@ -167,8 +219,6 @@ play.addEventListener("click", () => {
     }
 });
 
-video.addEventListener("play", () => {play.textContent = "❚❚"})
-video.addEventListener("pause", () => {play.textContent = "▶"})
 
 // Add flash to triggered buttons
 function flashButton (btn) {
@@ -204,7 +254,6 @@ plus5f.addEventListener("click", () => {
 
 
 // PlayBackSpeed
-speedNormal.className = "speed-btn-active";    // Initial Loading
 function setSpeed (rate, targetSpeed) {
     if (!video || isAdPlaying()) return;
     video.playbackRate = rate;
@@ -212,7 +261,7 @@ function setSpeed (rate, targetSpeed) {
     speedHalf.className = "";
     speedNormal.className = "";
 
-    targetSpeed.className = "speed-btn-active";
+    targetSpeed.className = "stm-speed-btn-active";
 }
 
 speedQuarter.addEventListener("click", () => setSpeed(0.25, speedQuarter));
@@ -224,10 +273,10 @@ mirror.addEventListener("click", () => {
     if (!video || isAdPlaying()) return;
     if(video.style.transform === "scaleX(-1)") {
         video.style.transform = "none";
-        mirror.className = "mirror-btn";
+        mirror.className = "stm-mirror-btn";
     } else {
         video.style.transform = "scaleX(-1)";
-        mirror.className = "mirror-btn-active";
+        mirror.className = "stm-mirror-btn-active";
     }
 });
 
@@ -241,37 +290,18 @@ for (let i = 0; i < 9; i++) {
     gridOverlay.append(document.createElement("div"));
 }
 
-document.getElementById("movie_player")?.append(gridOverlay);
-
 grid.addEventListener("click", () => {
     if (!video) return;
     if (gridOverlay.style.display === "none") {
         gridOverlay.style.display = "grid";
-        grid.className = "grid-btn-active";
+        grid.className = "stm-grid-btn-active";
     } else {
         gridOverlay.style.display = "none";
-        grid.className = "grid-btn";
+        grid.className = "stm-grid-btn";
     }
 });
 
-// Frame Update 
-video.addEventListener("timeupdate", () => {
-    if (!video || isAdPlaying()) return;
-    if (loopStartTime && loopEndTime) {
-        currentFrame.textContent = Math.floor((video.currentTime - loopStartTime) * 24);
-    } else {
-        currentFrame.textContent = Math.floor(video.currentTime * 24);
-    }
-});
 
-video.addEventListener("timeupdate", () => {
-    if (!video || isAdPlaying()) return;
-    if (loopEndTime) {
-        endFrame.textContent = " / " + Math.floor((loopEndTime - loopStartTime) * 24);
-    } else {
-        endFrame.textContent = " / " + Math.floor(video.duration * 24);
-    }
-});
 
 // Loop Start-End
 let loopStartTime = null;
@@ -289,44 +319,45 @@ loopStart.addEventListener("click", () => {
     if (!video || isAdPlaying()) return;
     loopStartTime = video.currentTime;
     loopStart.textContent = "Start: " + formatTime(loopStartTime);
-    loopStart.className = "loop-btn-active";
+    loopStart.className = "stm-loop-btn-active";
     loopClear.disabled = false;
-    if (loopStartTime) {
-        loopEnd.disabled = false;
+    loopEnd.disabled = false;
+
+    if (loopStartTime !== null && loopStartTime >= loopEndTime) {
+        loopEndTime = null;
+        loopEnd.className = ""
     }
 });
 
 loopEnd.disabled = true; // Initial Loading
 loopEnd.addEventListener("click", () => {
     if (!video || isAdPlaying()) return;
+    if (loopStartTime === null || video.currentTime <= loopStartTime) return;
+
     loopEndTime = video.currentTime;
     loopEnd.textContent = "End: " + formatTime(loopEndTime);
-    loopEnd.className = "loop-btn-active";
+    loopEnd.className = "stm-loop-btn-active";
 });
 
-// Loop Function
-video.addEventListener("timeupdate", () => {
-    if (!video || isAdPlaying()) return;
-    if (loopStartTime !== null && loopEndTime !== null) {
-        if (video.currentTime >= loopEndTime) {
-            video.currentTime = loopStartTime;
-        }
-    }
-});
+
 
 // Loop Clear
+function clearLoop() {
+    loopStartTime = null;
+    loopEndTime = null;
+    loopStart.textContent = "Start: --";
+    loopEnd.textContent = "End: --";
+    loopStart.className = "";
+    loopEnd.className = "";
+    loopEnd.disabled = true;
+    loopClear.disabled = true;
+}
+
 loopClear.disabled = true; // Initial Loading
 loopClear.addEventListener("click", () => {
     if (!video || isAdPlaying()) return;
-    if ((loopStartTime && loopEndTime) || (loopStartTime || loopEndTime)) {
-        loopStartTime = null;
-        loopEndTime = null;
-        loopStart.textContent = "Start: --";
-        loopEnd.textContent = "End: --";
-        loopStart.className = "";
-        loopEnd.className = "";
-        loopEnd.disabled = true;
-        loopClear.disabled = true;
+    if (loopStartTime !== null || loopEndTime !== null) {
+        clearLoop();
     }
 });
 
@@ -342,6 +373,9 @@ loopClear.addEventListener("click", () => {
 window.addEventListener("keydown", (e) => {
     // Disable shorcuts if ad is playing
     if (isAdPlaying()) return;
+
+    // Shortcut Safeguard
+    if (e.ctrlKey || e.altKey || e.metaKey) return;
 
     // If the user is typing on a textfield (e.g. comment section, search bar), DO NOTHING!
     const tag = document.activeElement.tagName.toLowerCase();
@@ -377,9 +411,11 @@ window.addEventListener("keydown", (e) => {
             loopEnd.click();
             break;
         case "Escape":
-            e.preventDefault();
-            e.stopImmediatePropagation();
-            loopClear.click();
+            if (loopStartTime !== null || loopEndTime !== null) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                loopClear.click();
+            }
             break;        
         case "m":
         case "M":
@@ -413,16 +449,36 @@ window.addEventListener("keydown", (e) => {
     }
 }, true)
 
-// Ad Detection
-const moviePlayer = document.getElementById("movie_player");
+const adObserver = new MutationObserver(updateAdVisibility);
 
-if (moviePlayer) {
-    const adObserver = new MutationObserver(updateAdVisibility);
+function initPlayer() {
+    video = getVideo();
+    // Ad Detection
+    const moviePlayer = document.getElementById("movie_player");
+    if (!moviePlayer || !video) return;
 
+    // Re-attach HUD and Grid if YouTube replaced #movie_player
+    if (!moviePlayer.contains(container)) {
+        moviePlayer.append(container)
+    }
+    if (!moviePlayer.contains(gridOverlay)) {
+        moviePlayer.append(gridOverlay)
+    }
+
+    // Attach Video listeners & sync play/pause button
+    attachVideoListeners();
+    play.textContent = video.paused ? "▶" : "❚❚";
+    updateTitle();
+
+    // Observe #movie_player for ads
+    adObserver.disconnect();
     adObserver.observe(moviePlayer, {
         attributes: true,
         attributeFilter: ["class"]
     });
+
+    // Clear registered loop on new video page access
+    clearLoop();
 
     // Initial check on load
     updateAdVisibility();
@@ -451,6 +507,9 @@ function updateAdVisibility() {
     }
 }
 
+initPlayer();
+window.addEventListener("yt-navigate-finish", initPlayer);
+
 // Collapsible function
 let isCollapsed = false;
 collapsibleBtn.addEventListener("click", () => {
@@ -459,11 +518,11 @@ collapsibleBtn.addEventListener("click", () => {
         collapsibleBtn.textContent = "▼";
         isCollapsed = true;
         container.classList.add("mini");
-        collapsibleBtn.className = "collapsible-btn-active";
+        collapsibleBtn.className = "stm-collapsible-btn-active";
     } else {
         collapsibleBtn.textContent = "▲";
         isCollapsed = false;
         container.classList.remove("mini");
-        collapsibleBtn.className = "collapsible-btn";
+        collapsibleBtn.className = "stm-collapsible-btn";
     }
 });
