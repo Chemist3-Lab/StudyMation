@@ -4,6 +4,12 @@
     "version": "0.21",
     "version_name": "v0.21 beta",
     "description": "Frame-by-frame playback, flipping, and grid-analysis for animators.",
+    "icons": {
+        "16": "icons/icon16.png",
+        "32": "icons/icon32.png",
+        "48": "icons/icon48.png",
+        "128": "icons/icon128.png"  
+    },
     "content_scripts": [
         {
             "matches": ["https://www.youtube.com/*"],
