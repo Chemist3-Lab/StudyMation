@@ -1,5 +1,5 @@
 <!-- Title + One line description -->
-# StudyMation   
+# <img src="icons/icon48.png" width="38" alt="StudyMation Icon" align="top" /> StudyMation
 ### Frame-by-frame study suited for 2D/3D Animators, storyboarders, and choreographers
 
 ---
@@ -13,7 +13,7 @@ StudyMation is a browser extension and precision playback overlay for YouTube de
 <!-- Features created for users -->
 ## Features
 - **Dynamic Timeline Scrubber:** Automatically bounds to the active Start-End loop points.
-- **Precision Frame Skipping:** Skip forward or backward by ±1 frame or jump by ±5 frames
+- **Precision Frame Skipping:** Skip forward or backward by ±1 frame or jump by ±5 frames.
 - **Relative and Absolute Frame Counter:** Displays live frame numbers currently played, or counts relative cycle progress according to the active loops.
 - **Start-End Range Looper:** Continuously loops a selected segment until it is cleared.
 - **Horizontal Video Flip:** Flips the video on the X-axis with the use of `Mirror` to evaluate composition balance and silhouettes.
@@ -26,6 +26,7 @@ StudyMation is a browser extension and precision playback overlay for YouTube de
 ## Recommendations
 - **Draggable Positioning (Planned):** Allow repositioning of the HUD anywhere on the video player.
 - **Collapsible to Mini-Mode (In-Progress):** Provides a compact toggle to minimize the HUD into a slim frame counter for a clearer view; only collapsible was placed.
+- **Dynamic Frame Rate Reading (Planned):** Support automatic FPS detection from YouTube instead of using a fixed `24fps` rate.
 
 ---
 
@@ -44,6 +45,11 @@ StudyMation/
 ├── fonts/                                      
     ├── Ubuntu-Medium.ttf                       # Bundled local font
     └── UFL.txt                                 # Font's License
+├── icons/                                      # Extension icons (16, 32, 48, 128px)
+    ├── icon16.png
+    ├── icon32.png
+    ├── icon48.png
+    └── icon128.png
 ├── style/
     └── style.css                               # Custom CSS Styling
 ├── content.js                                  # Core StudyMation engine & event listeners
@@ -61,7 +67,7 @@ StudyMation/
 | :--- | :--- |
 | **`[`** | Set Loop Start (In) |
 | **`]`** | Set Loop End (Out) |
-| **`Escape`** | Clears Active Loop |
+| **`Escape`** | Clears Active Loop (when a loop is set) |
 | **`M` / `m`** | Toggle Mirror (Flip X) |
 | **`G` / `g`** | Toggle Grid Overlay |
 | **`-`** | Decrease Playback Speed |
@@ -96,6 +102,14 @@ Open your browser and navigate to:
 Navigate to any video on YouTube—the StudyMation HUD will automatically appear over the player!
 
 ---
+
+<!-- License Information -->
+## License
+- **Code:** Distributed under the [MIT License](LICENSE).
+- **Font:** Bundled `Ubuntu-Medium.ttf` is licensed under the [Ubuntu Font Licence 1.0](fonts/UFL.txt).
+
+---
+
 
 <!-- Demonstration video or gif -->
 ## Demonstration
